@@ -12,6 +12,7 @@ using COMP2084___A1.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using COMP2084___A1.Models;
 
 namespace COMP2084___A1
 {
@@ -27,11 +28,11 @@ namespace COMP2084___A1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<COMP2084A1Context>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<COMP2084A1Context>();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
