@@ -9,23 +9,22 @@ using COMP2084___A1.Models;
 
 namespace COMP2084___A1.Controllers
 {
-    public class UserController : Controller
+    public class EcoScoreTalliesController : Controller
     {
         private readonly COMP2084A1Context _context;
 
-        public UserController(COMP2084A1Context context)
+        public EcoScoreTalliesController(COMP2084A1Context context)
         {
             _context = context;
         }
 
-        // GET: User
+        // GET: EcoScoreTallies
         public async Task<IActionResult> Index()
         {
-            var cOMP2084A1Context = _context.UserIn.Include(u => u.Item);
-            return View(await cOMP2084A1Context.ToListAsync());
+            return View(await _context.EcoScoreTally.ToListAsync());
         }
 
-        // GET: User/Details/5
+        // GET: EcoScoreTallies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +32,39 @@ namespace COMP2084___A1.Controllers
                 return NotFound();
             }
 
-            var userIn = await _context.UserIn
-                .Include(u => u.Item)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (userIn == null)
+            var ecoScoreTally = await _context.EcoScoreTally
+                .FirstOrDefaultAsync(m => m.EcoScoreId == id);
+            if (ecoScoreTally == null)
             {
                 return NotFound();
             }
 
-            return View(userIn);
+            return View(ecoScoreTally);
         }
 
-        // GET: User/Create
+        // GET: EcoScoreTallies/Create
         public IActionResult Create()
         {
-            ViewData["ItemId"] = new SelectList(_context.ProductIn, "ItemId", "Description");
             return View();
         }
 
-        // POST: User/Create
+        // POST: EcoScoreTallies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,FirstName,LastName,ItemId")] UserIn userIn)
+        public async Task<IActionResult> Create([Bind("EcoScoreId,Material,Removal,Reuse")] EcoScoreTally ecoScoreTally)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(userIn);
+                _context.Add(ecoScoreTally);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemId"] = new SelectList(_context.ProductIn, "ItemId", "Description", userIn.ItemId);
-            return View(userIn);
+            return View(ecoScoreTally);
         }
 
-        // GET: User/Edit/5
+        // GET: EcoScoreTallies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +72,22 @@ namespace COMP2084___A1.Controllers
                 return NotFound();
             }
 
-            var userIn = await _context.UserIn.FindAsync(id);
-            if (userIn == null)
+            var ecoScoreTally = await _context.EcoScoreTally.FindAsync(id);
+            if (ecoScoreTally == null)
             {
                 return NotFound();
             }
-            ViewData["ItemId"] = new SelectList(_context.ProductIn, "ItemId", "Description", userIn.ItemId);
-            return View(userIn);
+            return View(ecoScoreTally);
         }
 
-        // POST: User/Edit/5
+        // POST: EcoScoreTallies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,ItemId")] UserIn userIn)
+        public async Task<IActionResult> Edit(int id, [Bind("EcoScoreId,Material,Removal,Reuse")] EcoScoreTally ecoScoreTally)
         {
-            if (id != userIn.UserId)
+            if (id != ecoScoreTally.EcoScoreId)
             {
                 return NotFound();
             }
@@ -101,12 +96,12 @@ namespace COMP2084___A1.Controllers
             {
                 try
                 {
-                    _context.Update(userIn);
+                    _context.Update(ecoScoreTally);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserInExists(userIn.UserId))
+                    if (!EcoScoreTallyExists(ecoScoreTally.EcoScoreId))
                     {
                         return NotFound();
                     }
@@ -117,11 +112,10 @@ namespace COMP2084___A1.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemId"] = new SelectList(_context.ProductIn, "ItemId", "Description", userIn.ItemId);
-            return View(userIn);
+            return View(ecoScoreTally);
         }
 
-        // GET: User/Delete/5
+        // GET: EcoScoreTallies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +123,30 @@ namespace COMP2084___A1.Controllers
                 return NotFound();
             }
 
-            var userIn = await _context.UserIn
-                .Include(u => u.Item)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (userIn == null)
+            var ecoScoreTally = await _context.EcoScoreTally
+                .FirstOrDefaultAsync(m => m.EcoScoreId == id);
+            if (ecoScoreTally == null)
             {
                 return NotFound();
             }
 
-            return View(userIn);
+            return View(ecoScoreTally);
         }
 
-        // POST: User/Delete/5
+        // POST: EcoScoreTallies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userIn = await _context.UserIn.FindAsync(id);
-            _context.UserIn.Remove(userIn);
+            var ecoScoreTally = await _context.EcoScoreTally.FindAsync(id);
+            _context.EcoScoreTally.Remove(ecoScoreTally);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserInExists(int id)
+        private bool EcoScoreTallyExists(int id)
         {
-            return _context.UserIn.Any(e => e.UserId == id);
+            return _context.EcoScoreTally.Any(e => e.EcoScoreId == id);
         }
     }
 }

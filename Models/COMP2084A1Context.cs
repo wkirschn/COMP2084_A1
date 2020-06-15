@@ -15,8 +15,8 @@ namespace COMP2084___A1.Models
         {
         }
 
-        public virtual DbSet<ProductIn> ProductIn { get; set; }
-        public virtual DbSet<UserIn> UserIn { get; set; }
+        public virtual DbSet<EcoScoreTally> EcoScoreTally { get; set; }
+        public virtual DbSet<ItemInfo> ItemInfo { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -29,30 +29,30 @@ namespace COMP2084___A1.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProductIn>(entity =>
+            modelBuilder.Entity<EcoScoreTally>(entity =>
             {
-                entity.Property(e => e.ItemId).ValueGeneratedNever();
+                entity.Property(e => e.Material).IsUnicode(false);
+
+                entity.Property(e => e.Removal).IsUnicode(false);
+
+                entity.Property(e => e.Reuse).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ItemInfo>(entity =>
+            {
+                entity.HasKey(e => new { e.ItemId, e.UserName });
+
+                entity.Property(e => e.ItemId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.UserName).IsUnicode(false);
 
                 entity.Property(e => e.Description).IsUnicode(false);
 
-                entity.Property(e => e.EcoScore).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Material).IsUnicode(false);
-
-                entity.Property(e => e.Photo).IsUnicode(false);
-            });
-
-            modelBuilder.Entity<UserIn>(entity =>
-            {
-                entity.Property(e => e.FirstName).IsUnicode(false);
-
-                entity.Property(e => e.LastName).IsUnicode(false);
-
-                entity.HasOne(d => d.Item)
-                    .WithMany(p => p.UserIn)
-                    .HasForeignKey(d => d.ItemId)
+                entity.HasOne(d => d.EcoScore)
+                    .WithMany(p => p.ItemInfo)
+                    .HasForeignKey(d => d.EcoScoreId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserIn_ProductIn");
+                    .HasConstraintName("FK_ItemInfo_EcoScoreTally");
             });
 
             OnModelCreatingPartial(modelBuilder);
